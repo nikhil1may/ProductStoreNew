@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductStore.Utility
+namespace ProductStore.Interface
 {
     interface IAPIAccess
     {
@@ -21,5 +21,6 @@ namespace ProductStore.Utility
         string GetMethod(string url);
         string PostMethod(string data, string url);
         string GetProductBySearch(string criteria);
+        string GetCategoryByName(string criteria);
     }
 }

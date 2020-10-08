@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ProductStore.Interface;
 using ProductStore.Models;
 using ProductStore.Utility;
 using System;
@@ -14,7 +15,7 @@ namespace ProductStore.Product
 {
     public partial class Products : System.Web.UI.Page
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Products));
+        private static IExceptionHandling logger;
         private static IAPIAccess _apiAccess;
         public Products()
         {
@@ -25,6 +26,7 @@ namespace ProductStore.Product
         {
             var container = UnityConfig.Register();
             _apiAccess = container.Resolve<IAPIAccess>();
+            logger = container.Resolve<IExceptionHandling>();
         }
         protected void Page_Load(object sender, EventArgs e)
         {

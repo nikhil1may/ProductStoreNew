@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProductStore.Interface;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -6,13 +7,32 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using Unity;
 
 namespace ProductStore.Utility
 {
     public class APIAccess: IAPIAccess
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(APIAccess));
-        public string serverName = ConfigurationSettings.AppSettings["APIServerName"];
+        
+        public string serverName = null;
+
+        private static IExceptionHandling logger;
+
+       
+        public APIAccess()
+        {
+            serverName = ConfigurationSettings.AppSettings["APIServerName"];
+            GetDependentInstances();
+        }
+
+        public void GetDependentInstances()
+        {
+            var container = UnityConfig.Register();
+            logger = container.Resolve<IExceptionHandling>();
+        }
+
+
+
         public string GetAllProducts()
         {
             try { 
@@ -217,6 +237,22 @@ namespace ProductStore.Utility
 
             return result;
             }
+            catch (Exception ex)
+            {
+                logger.Error("StackTrace :" + ex.StackTrace + " Error Mesage : " + ex.Message + "Inner Exception :" + ex.InnerException);
+                return null;
+            }
+        }
+
+        public string GetCategoryByName(string criteria)
+        {
+            try
+            {
+                string result = PostMethod(criteria,"https://" + serverName + "/api/Edit/SearchCategory/");
+
+                return result;
+            }
+
             catch (Exception ex)
             {
                 logger.Error("StackTrace :" + ex.StackTrace + " Error Mesage : " + ex.Message + "Inner Exception :" + ex.InnerException);

@@ -1,3 +1,4 @@
+using ProductStore.Interface;
 using ProductStore.Utility;
 using System;
 
@@ -28,6 +29,7 @@ namespace ProductStore
             // e.g. container.RegisterType<ITestService, TestService>();
 
             container.RegisterType<IAPIAccess, APIAccess>();
+            container.RegisterType<IExceptionHandling, ExceptionHandling>();
             return container;
         }
         /// <summary>

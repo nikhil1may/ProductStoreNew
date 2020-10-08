@@ -26,8 +26,9 @@
         </div>
         <div style="float:right">
              Category :  <asp:TextBox ID="txtCategory" runat="server" CssClass="form-control"></asp:TextBox><asp:TextBox ID="txtCategoryId" runat="server" Visible="false"></asp:TextBox>
+            <asp:RequiredFieldValidator ForeColor="Red" ControlToValidate="txtCategory" ID="rfvCategory" runat="server" ErrorMessage="Please Enter Category Name" ValidationGroup="CategoryAddEdit">Please Enter Category Name</asp:RequiredFieldValidator>
     <hr />
-          <asp:Button ID="btnAddUpdateCategory" runat="server" Text="Add Category" OnClick="btnAddUpdateCategory_Click" CssClass="btn btn-info btn-lg" />
+          <asp:Button ID="btnAddUpdateCategory" runat="server" Text="Add Category" OnClick="btnAddUpdateCategory_Click" ValidationGroup="CategoryAddEdit" CssClass="btn btn-info btn-lg" />
       </div>
   </div>
 </asp:Content>

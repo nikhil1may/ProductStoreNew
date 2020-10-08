@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ProductStore.Interface;
+using ProductStore.Models;
 using ProductStore.Utility;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,7 @@ namespace ProductStore.Product
   
     public partial class ProductDetails : System.Web.UI.Page
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ProductDetails));
+        private static IExceptionHandling logger;
         private static IAPIAccess _apiAccess;
         public ProductDetails()
         {
@@ -26,9 +28,11 @@ namespace ProductStore.Product
         {
             var container = UnityConfig.Register();
             _apiAccess = container.Resolve<IAPIAccess>();
+            logger = container.Resolve<IExceptionHandling>();
         }
         protected void Page_Load(object sender, EventArgs e)
         {
+            
             if (!IsPostBack)
             {
                 try
@@ -91,19 +95,38 @@ namespace ProductStore.Product
 
         protected void btnEdit_Click(object sender, EventArgs e)
         {
-            try { 
-            Models.ProductDetails productDetails = new Models.ProductDetails();
-            productDetails.Id = Convert.ToInt32(txtId.Text);
-            productDetails.productName = txtProductName.Text;
-            productDetails.categoryName = ddlCategory.SelectedValue;
-            productDetails.currencyName = ddlCurrency.SelectedValue;
-            productDetails.unitName = ddlUnit.SelectedValue;
-            productDetails.price =Convert.ToDecimal( txtPrice.Text);
+            try
+            {
+                Models.ProductDetails productDetails = new Models.ProductDetails();
+                productDetails.Id = Convert.ToInt32(txtId.Text);
+                productDetails.productName = txtProductName.Text;
+                productDetails.categoryName = ddlCategory.SelectedValue;
+                productDetails.currencyName = ddlCurrency.SelectedValue;
+                productDetails.unitName = ddlUnit.SelectedValue;
+                productDetails.price = Convert.ToDecimal(txtPrice.Text);
 
-            string jsonProductDetails= JsonConvert.SerializeObject(productDetails);
-          
-            _apiAccess.UpdateProduct(jsonProductDetails);
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Product Details Added/Updated sucessfully'); window.open('Products.aspx');", true);
+                string jsonProductDetails = JsonConvert.SerializeObject(productDetails);
+
+                ProductSearch productSearch = new ProductSearch();
+                productSearch.CategoryId = Convert.ToInt32(ddlCategory.SelectedValue);
+                productSearch.ProductName = txtProductName.Text;
+
+                string checkProductName = JsonConvert.SerializeObject(productSearch);
+                string data = _apiAccess.GetProductBySearch(checkProductName);
+                DataTable checkProductNameDT = JsonConvert.DeserializeObject<DataTable>(data);
+
+                if (checkProductNameDT.Rows.Count > 0)
+                {
+                     Response.Write("<script>alert('Product name Already Present')</script>");
+                }
+
+                else
+                {
+
+
+                    _apiAccess.UpdateProduct(jsonProductDetails);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Product Details Added/Updated sucessfully'); window.open('Products.aspx');", true);
+                }
             }
 
             catch (Exception ex)

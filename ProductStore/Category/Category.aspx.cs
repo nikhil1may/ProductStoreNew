@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ProductStore.Interface;
 using ProductStore.Models;
 using ProductStore.Utility;
 using System;
@@ -15,7 +16,7 @@ namespace ProductStore.Category
 {
     public partial class Category : System.Web.UI.Page
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Category));
+        private static IExceptionHandling logger;
         private static IAPIAccess _apiAccess;
         public Category()
         {
@@ -26,6 +27,7 @@ namespace ProductStore.Category
         {
             var container = UnityConfig.Register();
             _apiAccess = container.Resolve<IAPIAccess>();
+            logger = container.Resolve<IExceptionHandling>();
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -111,13 +113,22 @@ namespace ProductStore.Category
             try { 
             Models.CategoryDetails categoryDetails = new Models.CategoryDetails();
             categoryDetails.Id = Convert.ToInt32(txtCategoryId.Text);
-            categoryDetails.CategoryName = txtCategory.Text;          
+                categoryDetails.CategoryName = txtCategory.Text.TrimEnd().TrimStart(); ;          
 
             string jsonProductDetails = JsonConvert.SerializeObject(categoryDetails);
-            _apiAccess.UpdateCategory(jsonProductDetails);
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Category Details Added/Updated sucessfully'); window.open('Category.aspx');", true);
+                string checkData = _apiAccess.GetCategoryByName(jsonProductDetails);
+                DataTable dtCategories = JsonConvert.DeserializeObject<DataTable>(checkData);
+                if (dtCategories.Rows.Count > 0)
+                {
+                    Response.Write("<script>alert('Category Name Already Present')</script>");
+                }
 
+                else
+                {
+                    _apiAccess.UpdateCategory(jsonProductDetails);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Category Details Added/Updated sucessfully'); window.open('Category.aspx');", true);
+                }
             }
             catch (Exception ex)
             {
