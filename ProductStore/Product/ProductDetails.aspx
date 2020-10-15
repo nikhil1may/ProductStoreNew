@@ -12,7 +12,7 @@
                     <td>
                         Product Name : <asp:TextBox ID="txtProductName" runat="server" CssClass="form-control"></asp:TextBox>
                          <asp:RequiredFieldValidator ForeColor="Red" ControlToValidate="txtProductName" ID="rfvProductName" runat="server" ErrorMessage="Please Enter Product Name" ValidationGroup="AddEditProduct">Please Enter Product Name</asp:RequiredFieldValidator>
-
+                        <asp:Label ID="ProductNameSaved" runat="server"  Visible="false"></asp:Label>
                     </td>
                      <td>
                         Category : <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -38,7 +38,7 @@
                         <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server"
      ControlToValidate="txtPrice"
      ErrorMessage="Only numeric allowed." ForeColor="Red"
-     ValidationExpression="^[0-9]*$" ValidationGroup="AddEditProduct">Please Enter Only Numbers
+     ValidationExpression="^\d{0,8}(\.\d{1,4})?$" ValidationGroup="AddEditProduct">Please Enter Only Numbers
 </asp:RegularExpressionValidator> </div>
                     </td>
                        <td>

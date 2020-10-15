@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductStore.Interface
 {
-    interface IAPIAccess
+    public interface IAPIAccess
     {
         string GetAllProducts();
         string GetProductById(int Id);

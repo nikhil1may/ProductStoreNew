@@ -15,19 +15,10 @@ namespace ProductStore.Product
 {
     public partial class Products : System.Web.UI.Page
     {
-        private static IExceptionHandling logger;
-        private static IAPIAccess _apiAccess;
-        public Products()
-        {
-            GetDependentInstances();
-        }
-
-        public void GetDependentInstances()
-        {
-            var container = UnityConfig.Register();
-            _apiAccess = container.Resolve<IAPIAccess>();
-            logger = container.Resolve<IExceptionHandling>();
-        }
+        [Microsoft.Practices.Unity.Dependency]
+        public IExceptionHandling logger { get; set; }
+        [Microsoft.Practices.Unity.Dependency]
+        public IAPIAccess _apiAccess { get; set; }    
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -62,7 +53,7 @@ namespace ProductStore.Product
             {
                 if (e.CommandArgument != null)
                 {
-                    Response.Redirect("ProductDetails?Id=" + e.CommandArgument.ToString());
+                    Response.Redirect("ProductDetails?Id=" + e.CommandArgument.ToString(), false);
                 }
             }
 

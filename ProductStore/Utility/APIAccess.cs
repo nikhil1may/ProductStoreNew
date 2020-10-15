@@ -13,30 +13,16 @@ namespace ProductStore.Utility
 {
     public class APIAccess: IAPIAccess
     {
-        
-        public string serverName = null;
+        //[Microsoft.Practices.Unity.Dependency]
+        public string serverName = ConfigurationSettings.AppSettings["APIServerName"];
 
-        private static IExceptionHandling logger;
-
-       
-        public APIAccess()
-        {
-            serverName = ConfigurationSettings.AppSettings["APIServerName"];
-            GetDependentInstances();
-        }
-
-        public void GetDependentInstances()
-        {
-            var container = UnityConfig.Register();
-            logger = container.Resolve<IExceptionHandling>();
-        }
-
-
+        //public IExceptionHandling logger { get; set; }
+        ExceptionHandling logger = new ExceptionHandling();
 
         public string GetAllProducts()
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/GetAllProducts");
+            string result = GetMethod( serverName + "/Home/GetAllProducts");
 
             return result;
             }
@@ -50,7 +36,7 @@ namespace ProductStore.Utility
         public string GetProductById(int Id)
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/GetProductById/"+Id);
+            string result = GetMethod( serverName + "/Home/GetProductById/"+Id);
 
             return result;
             }
@@ -64,7 +50,7 @@ namespace ProductStore.Utility
         public string GetAllCurrencies()
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/GetAllCurrencies/");
+            string result = GetMethod( serverName + "/Home/GetAllCurrencies/");
 
             return result;
             }
@@ -79,7 +65,7 @@ namespace ProductStore.Utility
         public string GetAllCategories()
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/GetAllCategories/");
+            string result = GetMethod( serverName + "/Home/GetAllCategories/");
 
             return result;
             }
@@ -94,7 +80,7 @@ namespace ProductStore.Utility
         public string GetAllUnits()
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/GetAllUnits/");
+            string result = GetMethod( serverName + "/Home/GetAllUnits/");
 
             return result;
             }
@@ -109,7 +95,7 @@ namespace ProductStore.Utility
         public string UpdateProduct(string data)
         {
             try { 
-            string result = PostMethod(data, "https://"+ serverName + "/api/Edit/UpdateProduct");
+            string result = PostMethod(data,  serverName + "/api/Edit/UpdateProduct");
 
             return result;
             }
@@ -123,7 +109,7 @@ namespace ProductStore.Utility
         public string DeleteProduct(string Id)
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/DeleteProduct/" + Id);
+            string result = GetMethod( serverName + "/Home/DeleteProduct/" + Id);
 
             return result;
             }
@@ -138,7 +124,7 @@ namespace ProductStore.Utility
         public string GetCategoryById(int Id)
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/GetCategoryById/" + Id);
+            string result = GetMethod( serverName + "/Home/GetCategoryById/" + Id);
 
             return result;
             }
@@ -153,7 +139,7 @@ namespace ProductStore.Utility
         public string DeleteCategory(string Id)
         {
             try { 
-            string result = GetMethod("https://"+ serverName + "/Home/DeleteCategory/" + Id);
+            string result = GetMethod( serverName + "/Home/DeleteCategory/" + Id);
 
             return result;
             }
@@ -220,7 +206,7 @@ namespace ProductStore.Utility
         public string UpdateCategory(string data)
         {
             try { 
-            string result = PostMethod(data, "https://"+ serverName + "/api/Edit/AddUpdateCategory");
+            string result = PostMethod(data,  serverName + "/api/Edit/AddUpdateCategory");
             return result;
             }
             catch (Exception ex)
@@ -233,7 +219,7 @@ namespace ProductStore.Utility
         public string GetProductBySearch(string criteria)
         {
             try { 
-            string result = PostMethod(criteria,"https://"+ serverName + "/api/Edit/SearchProduct/" );
+            string result = PostMethod(criteria, serverName + "/api/Edit/SearchProduct/" );
 
             return result;
             }

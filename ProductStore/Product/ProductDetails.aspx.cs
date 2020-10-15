@@ -17,19 +17,11 @@ namespace ProductStore.Product
   
     public partial class ProductDetails : System.Web.UI.Page
     {
-        private static IExceptionHandling logger;
-        private static IAPIAccess _apiAccess;
-        public ProductDetails()
-        {
-            GetDependentInstances();
-        }
-
-        public void GetDependentInstances()
-        {
-            var container = UnityConfig.Register();
-            _apiAccess = container.Resolve<IAPIAccess>();
-            logger = container.Resolve<IExceptionHandling>();
-        }
+        [Microsoft.Practices.Unity.Dependency]
+        public IExceptionHandling logger { get; set; }
+        [Microsoft.Practices.Unity.Dependency]
+        public IAPIAccess _apiAccess { get; set; }        
+       
         protected void Page_Load(object sender, EventArgs e)
         {
             
@@ -76,6 +68,7 @@ namespace ProductStore.Product
                         txtId.Text = dtProductDetails.Id;
                         btnEdit.Text = "Update Product";
                         btnDelete.Visible = true;
+                        ProductNameSaved.Text = dtProductDetails.productName;
                     }
                     else
                     {
@@ -115,17 +108,19 @@ namespace ProductStore.Product
                 string data = _apiAccess.GetProductBySearch(checkProductName);
                 DataTable checkProductNameDT = JsonConvert.DeserializeObject<DataTable>(data);
 
-                if (checkProductNameDT.Rows.Count > 0)
+                if (checkProductNameDT.Rows.Count > 0 && ProductNameSaved.Text != txtProductName.Text)
                 {
                      Response.Write("<script>alert('Product name Already Present')</script>");
                 }
 
                 else
                 {
-
-
                     _apiAccess.UpdateProduct(jsonProductDetails);
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Product Details Added/Updated sucessfully'); window.open('Products.aspx');", true);
+                    if (btnEdit.Text == "Update Product")
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Product Details Updated sucessfully'); window.open('Products.aspx');", true);
+                    else
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Product Details Added sucessfully'); window.open('Products.aspx');", true);
+
                 }
             }
 

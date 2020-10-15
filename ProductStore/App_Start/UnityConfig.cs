@@ -21,15 +21,7 @@ namespace ProductStore
           });
         public static UnityContainer Register()
         {
-            var container = new UnityContainer();
-
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
-
-            // e.g. container.RegisterType<ITestService, TestService>();
-
-            container.RegisterType<IAPIAccess, APIAccess>();
-            container.RegisterType<IExceptionHandling, ExceptionHandling>();
+            var container = new UnityContainer();        
             return container;
         }
         /// <summary>
@@ -55,7 +47,7 @@ namespace ProductStore
             // container.LoadConfiguration();
 
             // TODO: Register your type's mappings here.
-            // container.RegisterType<IProductRepository, ProductRepository>();
+             container.RegisterType<IExceptionHandling, ExceptionHandling>();
         }
     }
 }

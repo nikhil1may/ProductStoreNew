@@ -16,19 +16,11 @@ namespace ProductStore.Category
 {
     public partial class Category : System.Web.UI.Page
     {
-        private static IExceptionHandling logger;
-        private static IAPIAccess _apiAccess;
-        public Category()
-        {
-            GetDependentInstances();
-        }
-
-        public void GetDependentInstances()
-        {
-            var container = UnityConfig.Register();
-            _apiAccess = container.Resolve<IAPIAccess>();
-            logger = container.Resolve<IExceptionHandling>();
-        }
+        [Microsoft.Practices.Unity.Dependency]
+        public IExceptionHandling logger { get; set; }
+        [Microsoft.Practices.Unity.Dependency]
+        public IAPIAccess _apiAccess { get; set; }
+       
         protected void Page_Load(object sender, EventArgs e)
         {
             if(!IsPostBack)
@@ -127,7 +119,18 @@ namespace ProductStore.Category
                 else
                 {
                     _apiAccess.UpdateCategory(jsonProductDetails);
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Category Details Added/Updated sucessfully'); window.open('Category.aspx');", true);
+
+                    if (btnAddUpdateCategory.Text == "Update Category")
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Category Details Updated sucessfully'); window.open('Category.aspx');", true);
+
+                    }  
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", " alert('Category Details Added sucessfully'); window.open('Category.aspx');", true);
+
+                    }
+
                 }
             }
             catch (Exception ex)
